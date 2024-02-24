@@ -11,7 +11,17 @@ Run CrewAI locally for free!
       or copy and paste commands into terminal
   - This will create a model file in the models directory
   - To change models, edit the create_model.sh script
--
+- Verify you are using local llm
+  - `cat ~/.ollama/logs/server.log`
+
+# Tips
+
+- If using multiple models,
+
+# Warnings & Recommendations
+
+- Ollama doesn't work with Async tasks and a bunch of newer CrewAI features yet.
+- Lose context. Be very explicit in tasks. Not generic.
 
 # Resources
 

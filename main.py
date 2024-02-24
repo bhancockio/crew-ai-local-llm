@@ -1,77 +1,58 @@
-import sys
-from crewai import Agent, Task
-import os
-from dotenv import load_dotenv
-from langchain.tools import tool
-from langchain.chat_models.openai import ChatOpenAI
-from tools.MarkdownTools import markdown_validation_tool
+from crewai import Crew
+from textwrap import dedent
 
+from agents import StockAnalysisAgents
+from tasks import StockAnalysisTasks
+
+from dotenv import load_dotenv
 load_dotenv()
 
+class FinancialCrew:
+  def __init__(self, company):
+    self.company = company
 
+  def run(self):
+    agents = StockAnalysisAgents()
+    tasks = StockAnalysisTasks()
 
-def process_markdown_document(filename):
-    """
-    Processes a markdown document by reviewing its syntax validation 
-    results and providing feedback on necessary changes.
+    research_analyst_agent = agents.research_analyst()
+    financial_analyst_agent = agents.financial_analyst()
+    investment_advisor_agent = agents.investment_advisor()
 
-    Args:
-        filename (str): The path to the markdown file to be processed.
+    research_task = tasks.research(research_analyst_agent, self.company)
+    financial_task = tasks.financial_analysis(financial_analyst_agent)
+    filings_task = tasks.filings_analysis(financial_analyst_agent)
+    recommend_task = tasks.recommend(investment_advisor_agent)
 
-    Returns:
-        str: The list of recommended changes to make to the document.
+    crew = Crew(
+      agents=[
+        research_analyst_agent,
+        financial_analyst_agent,
+        investment_advisor_agent
+      ],
+      tasks=[
+        research_task,
+        financial_task,
+        filings_task,
+        recommend_task
+      ],
+      verbose=True
+    )
 
-    """
+    result = crew.kickoff()
+    return result
 
-    # Define general agent
-    general_agent  = Agent(role='Requirements Manager',
-                    goal="""Provide a detailed list of the markdown 
-                            linting results. Give a summary with actionable 
-                            tasks to address the validation results. Write your 
-                            response as if you were handing it to a developer 
-                            to fix the issues.
-                            DO NOT provide examples of how to fix the issues or
-                            recommend other tools to use.""",
-                    backstory="""You are an expert business analyst 
-					and software QA specialist. You provide high quality, 
-                    thorough, insightful and actionable feedback via 
-                    detailed list of changes and actionable tasks.""",
-                    allow_delegation=False, 
-                    verbose=True,
-                    tools=[markdown_validation_tool])
-
-
-    # Define Tasks Using Crew Tools
-    syntax_review_task = Task(description=f"""
-			Use the markdown_validation_tool to review 
-			the file(s) at this path: {filename}
-            
-			Be sure to pass only the file path to the markdown_validation_tool.
-			Use the following format to call the markdown_validation_tool:
-			Do I need to use a tool? Yes
-			Action: markdown_validation_tool
-			Action Input: {filename}
-
-			Get the validation results from the tool 
-			and then summarize it into a list of changes
-			the developer should make to the document.
-            DO NOT recommend ways to update the document.
-            DO NOT change any of the content of the document or
-            add content to it. It is critical to your task to
-            only respond with a list of changes.
-			
-			If you already know the answer or if you do not need 
-			to use a tool, return it as your Final Answer.""",
-            agent=general_agent)
-    
-    updated_markdown = syntax_review_task.execute()
-
-    return updated_markdown
-
-# If called directly from the command line take the first argument as the filename
 if __name__ == "__main__":
-
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-        processed_document = process_markdown_document(filename)
-        print(processed_document)
+  print("## Welcome to Financial Analysis Crew")
+  print('-------------------------------')
+  company = input(
+    dedent("""
+      What is the company you want to analyze?
+    """))
+  
+  financial_crew = FinancialCrew(company)
+  result = financial_crew.run()
+  print("\n\n########################")
+  print("## Here is the Report")
+  print("########################\n")
+  print(result)
