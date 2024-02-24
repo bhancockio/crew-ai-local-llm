@@ -6,7 +6,7 @@ from langchain.tools import tool
 
 
 class SearchTools():
-  @tool("Search the internet")
+  @tool("Search internet")
   def search_internet(query):
     """Useful to search the internet 
     about a a given topic and return relevant results"""

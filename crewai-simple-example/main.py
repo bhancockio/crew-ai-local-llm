@@ -6,6 +6,11 @@ from MarkdownTools import markdown_validation_tool
 
 load_dotenv()
 
+llm = ChatOpenAI(
+    model="crewai-llama2",
+    base_url="http://localhost:11434/v1"
+)
+
 def process_markdown_document(filename):
     """
     Processes a markdown document by reviewing its syntax validation 
@@ -34,7 +39,8 @@ def process_markdown_document(filename):
                     detailed list of changes and actionable tasks.""",
                     allow_delegation=False, 
                     verbose=True,
-                    tools=[markdown_validation_tool])
+                    tools=[markdown_validation_tool],
+                    llm=llm)
 
 
     # Define Tasks Using Crew Tools

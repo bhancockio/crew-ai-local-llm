@@ -20,9 +20,9 @@ class FinancialCrew:
     investment_advisor_agent = agents.investment_advisor()
 
     research_task = tasks.research(research_analyst_agent, self.company)
-    financial_task = tasks.financial_analysis(financial_analyst_agent)
-    filings_task = tasks.filings_analysis(financial_analyst_agent)
-    recommend_task = tasks.recommend(investment_advisor_agent)
+    financial_task = tasks.financial_analysis(financial_analyst_agent, self.company)
+    filings_task = tasks.filings_analysis(financial_analyst_agent, self.company)
+    recommend_task = tasks.recommend(investment_advisor_agent, self.company)
 
     crew = Crew(
       agents=[

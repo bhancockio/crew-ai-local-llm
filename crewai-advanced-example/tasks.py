@@ -26,9 +26,9 @@ class StockAnalysisTasks():
       agent=agent
     )
     
-  def financial_analysis(self, agent): 
+  def financial_analysis(self, agent, company): 
     return Task(description=dedent(f"""
-        Conduct a thorough analysis of the stock's financial
+        Conduct a thorough analysis of the {company} stock's financial
         health and market performance. 
         This includes examining key financial metrics such as
         P/E ratio, EPS growth, revenue trends, and 
@@ -44,13 +44,13 @@ class StockAnalysisTasks():
 
         Make sure to use the most recent data possible.
       """),
-      agent=agent
+      agent=agent,
     )
 
-  def filings_analysis(self, agent):
+  def filings_analysis(self, agent, company):
     return Task(description=dedent(f"""
         Analyze the latest 10-Q and 10-K filings from EDGAR for
-        the stock in question. 
+        the {company} stock in question. 
         Focus on key sections like Management's Discussion and
         Analysis, financial statements, insider trading activity, 
         and any disclosed risks.
@@ -66,12 +66,12 @@ class StockAnalysisTasks():
       agent=agent
     )
 
-  def recommend(self, agent):
+  def recommend(self, agent, company):
     return Task(description=dedent(f"""
         Review and synthesize the analyses provided by the
         Financial Analyst and the Research Analyst.
         Combine these insights to form a comprehensive
-        investment recommendation. 
+        investment recommendation for {company}. 
         
         You MUST Consider all aspects, including financial
         health, market sentiment, and qualitative data from
