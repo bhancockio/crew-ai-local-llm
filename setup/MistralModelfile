@@ -1,0 +1,14 @@
+FROM mistral
+
+# Set parementers
+
+PARAMETER temperature 0.8
+PARAMETER stop Result
+PARAMETER stop Final Answer
+
+# Sets a custom system message to specify the behavior of 
+# the chat assistant
+
+# Leaving it blank for now.
+
+SYSTEM """"""
